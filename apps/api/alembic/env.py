@@ -2,6 +2,10 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 import os
+import sys
+
+# Add the parent directory to the path so we can import app
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from app.models.base import Base
 # Import models to register metadata
