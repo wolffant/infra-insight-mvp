@@ -8,7 +8,8 @@ def _auth_header():
     return {"Authorization": f"Basic {token}", "Accept": "application/json"}
 
 def search_issues(jql: str, start_at: int = 0, max_results: int = 50):
-    url = f"{settings.JIRA_BASE_URL}/rest/api/3/search"
+    base_url = settings.JIRA_BASE_URL.rstrip('/')
+    url = f"{base_url}/rest/api/3/search/jql"
     params = {
         "jql": jql,
         "startAt": start_at,
@@ -17,6 +18,9 @@ def search_issues(jql: str, start_at: int = 0, max_results: int = 50):
         "fields": "summary,issuetype,status,priority,assignee,reporter,created,updated,project",
     }
     r = requests.get(url, headers=_auth_header(), params=params, timeout=60)
+    if not r.ok:
+        print(f"Jira API Error: {r.status_code}")
+        print(f"Response: {r.text}")
     r.raise_for_status()
     return r.json()
 
