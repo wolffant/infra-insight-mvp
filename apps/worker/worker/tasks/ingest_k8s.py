@@ -24,6 +24,8 @@ def _reason(pod):
 @celery_app.task
 def ingest_k8s():
     v1 = load_client()
+    if not v1:
+        return {"status": "skipped", "reason": "Kubernetes client unavailable"}
     ns_allow = namespace_filter()
 
     # Pods snapshot
