@@ -30,8 +30,9 @@ docker compose exec api alembic upgrade head
    - `JIRA_PROJECT_KEYS`: Comma-separated project keys to ingest (e.g., `PROJ1,PROJ2`)
 
 ### Kubernetes Setup
-- **In-cluster (EKS)**: Uses the service account token automatically
-- **Local dev**: Ensure your `~/.kube/config` is valid (or update `KUBECONFIG_PATH` in `.env`)
+- **In-cluster (EKS)**: Uses the service account token automatically - recommended deployment target
+- **Local dev**: K8s ingestion has networking limitations with minikube/Docker Desktop due to container isolation. For local testing, K8s ingestion can be skipped (will gracefully skip if unavailable)
+- To enable locally (experimental): Ensure your `~/.kube/config` exists and mount it in docker-compose.yml worker volumes
 
 ## Run ingestion + detectors (ad-hoc)
 ```bash
@@ -41,8 +42,9 @@ docker compose exec worker python -m worker.cli run-detectors
 ```
 
 ## Notes
-- Jira API now uses the v3 search/jql endpoint (migrated from deprecated `/rest/api/3/search`)
+- Jira API uses the v3 `/rest/api/3/search/jql` endpoint (migrated from deprecated `/rest/api/3/search`)
 - Jira auth: email + API token (Atlassian Cloud)
-- Kubernetes access: in-cluster service account on EKS, or local kubeconfig in dev
+- K8s ingestion gracefully skips if Kubernetes config unavailable (expected in local dev)
 - Findings are **upserted** by (type, fingerprint)
-- Next.js requires `tsconfig.json` with path aliases configured for `@/*` imports
+- Next.js path aliases (`@/*`) configured in `tsconfig.json`
+- API accessible from Next.js SSR via Docker service name (`http://api:8000`)
