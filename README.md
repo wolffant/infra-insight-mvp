@@ -12,13 +12,35 @@ cp .env.example .env
 docker compose up --build
 ```
 
+Or with minikube for K8s testing:
+```bash
+make up-with-k8s
+```
+
 - API: http://localhost:8000/docs
 - Web: http://localhost:3000
+
+## Stop services
+```bash
+# Stop docker services only
+docker compose down
+
+# Stop everything including minikube
+make down-all
+```
 
 ## Bootstrap DB
 ```bash
 docker compose exec api alembic upgrade head
 ```
+
+## Available Make Commands
+- `make up` - Start all services with docker compose
+- `make up-with-k8s` - Start minikube (if not running) and all services
+- `make down` - Stop docker services
+- `make down-all` - Stop docker services and minikube
+- `make logs` - Follow logs from all services
+- `make bootstrap` - Run database migrations
 
 ## Configuration
 
@@ -31,8 +53,9 @@ docker compose exec api alembic upgrade head
 
 ### Kubernetes Setup
 - **In-cluster (EKS)**: Uses the service account token automatically - recommended deployment target
-- **Local dev**: K8s ingestion has networking limitations with minikube/Docker Desktop due to container isolation. For local testing, K8s ingestion can be skipped (will gracefully skip if unavailable)
-- To enable locally (experimental): Ensure your `~/.kube/config` exists and mount it in docker-compose.yml worker volumes
+- **Local dev with minikube**: Use `make up-with-k8s` to start minikube automatically
+- **K8s ingestion**: Has networking limitations with Docker containers. Works best when deployed to EKS
+- The system gracefully skips K8s ingestion if unavailable (no errors in local dev)
 
 ## Run ingestion + detectors (ad-hoc)
 ```bash
