@@ -14,7 +14,8 @@ class Settings(BaseSettings):
     JIRA_JQL_EXTRA: str = ""
     JIRA_MAX_ISSUES: int = 200
 
-    K8S_MODE: str = "incluster"
+   # K8S_MODE: str = "incluster"
+    K8S_MODE: str = "kubeconfig"
     KUBECONFIG_PATH: str = "/root/.kube/config"
     K8S_NAMESPACE_FILTER: str = ""
     K8S_MAX_EVENTS: int = 500
