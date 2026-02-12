@@ -1,0 +1,11 @@
+Project,Issue Type,Summary,Description,Priority,Created,Updated
+PAI,Bug,Legacy API timeout,Simulated backlog issue for detector,High,2023-01-05 10:15,2023-01-10 09:00
+PAI,Task,Refactor auth middleware,Simulated backlog issue for detector,Medium,2023-02-01 14:30,2023-02-02 08:20
+PAI,Bug,Crashloop in worker,Simulated backlog issue for detector,Highest,2023-03-12 09:05,2023-03-12 11:45
+PAI,Task,Update Helm chart,Simulated backlog issue for detector,Low,2023-04-18 16:10,2023-04-20 10:00
+PAI,Bug,DB connection leaks,Simulated backlog issue for detector,High,2023-05-22 12:00,2023-05-25 13:30
+PAI,Task,Improve API docs,Simulated backlog issue for detector,Medium,2023-06-07 09:30,2023-06-07 09:45
+PAI,Bug,Slow query on findings endpoint,Simulated backlog issue for detector,High,2023-07-03 15:20,2023-07-04 10:10
+PAI,Task,Add metrics for ingestion,Simulated backlog issue for detector,Low,2023-08-11 11:00,2023-08-12 08:00
+PAI,Bug,UI trends chart broken,Simulated backlog issue for detector,Medium,2023-09-19 10:00,2023-09-19 10:30
+PAI,Task,Rotate API keys,Simulated backlog issue for detector,Medium,2023-10-25 13:00,2023-10-25 13:15
