@@ -28,9 +28,14 @@ class CrashLoopRestartsDetector(Detector):
         for ns, arr in by_ns.items():
             arr_sorted = sorted(arr, key=lambda x: (x.restart_count or 0), reverse=True)
             sample = [{"pod": x.pod, "restarts": x.restart_count, "reason": x.reason} for x in arr_sorted[:20]]
+            
+            # Build remediation action params
+            pods_to_restart = [{"name": x.pod, "namespace": x.namespace} for x in arr if x.reason == "CrashLoopBackOff"]
+            
             fingerprint = f"{ns}:pod_restarts_or_crashloop"
             sev = 1 if any(x.reason == "CrashLoopBackOff" for x in arr) else 2
-            findings.append({
+            
+            finding = {
                 "id": str(uuid.uuid4()),
                 "type": self.name,
                 "fingerprint": fingerprint,
@@ -52,5 +57,18 @@ class CrashLoopRestartsDetector(Detector):
                         "Ensure replicas > 1 for critical workloads and add PDB."
                     ]
                 }
-            })
+            }
+            
+            # Add action if there are crashloop pods
+            if pods_to_restart:
+                finding["proposed_action"] = {
+                    "action_type": "restart_pods",
+                    "title": f"Restart {len(pods_to_restart)} CrashLoopBackOff pods in {ns}",
+                    "description": f"Delete and recreate pods stuck in CrashLoopBackOff to attempt recovery",
+                    "params": {
+                        "pods": pods_to_restart
+                    }
+                }
+            
+            findings.append(finding)
         return findings
