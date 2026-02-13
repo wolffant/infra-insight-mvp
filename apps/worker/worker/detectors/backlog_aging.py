@@ -29,8 +29,10 @@ class BacklogAgingDetector(Detector):
         findings = []
         for project_key, arr in buckets.items():
             sample = [x.key for x in arr[:20]]
+            issue_keys = [x.key for x in arr]
             fingerprint = f"{project_key}:todo_older_than_{settings.BACKLOG_AGING_DAYS}d"
-            findings.append({
+            
+            finding = {
                 "id": str(uuid.uuid4()),
                 "type": self.name,
                 "fingerprint": fingerprint,
@@ -50,6 +52,16 @@ class BacklogAgingDetector(Detector):
                         "Run weekly backlog grooming with explicit close/park decisions.",
                         "Enforce required fields at intake (priority, owner, acceptance criteria)."
                     ]
+                },
+                # Propose remediation action
+                "proposed_action": {
+                    "action_type": "close_jira_tickets",
+                    "title": f"Close {len(issue_keys)} stale tickets in {project_key}",
+                    "description": f"Auto-close {len(issue_keys)} tickets that have been in To Do for >{settings.BACKLOG_AGING_DAYS} days",
+                    "params": {
+                        "issue_keys": issue_keys
+                    }
                 }
-            })
+            }
+            findings.append(finding)
         return findings

@@ -1,9 +1,18 @@
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import Column, String, Integer, DateTime, JSON, Text, UniqueConstraint
+from sqlalchemy import Column, String, Integer, DateTime, JSON, Text, UniqueConstraint, ForeignKey, Enum
 from sqlalchemy.sql import func
+import enum
 
 class Base(DeclarativeBase):
     pass
+
+class ActionStatus(str, enum.Enum):
+    PROPOSED = "proposed"
+    APPROVED = "approved"
+    EXECUTING = "executing"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    REJECTED = "rejected"
 
 class JiraIssue(Base):
     __tablename__ = "jira_issues"
@@ -81,3 +90,22 @@ class Finding(Base):
     remediation = Column(JSON, nullable=False, default=dict)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+class RemediationAction(Base):
+    __tablename__ = "remediation_actions"
+
+    id = Column(String, primary_key=True)
+    finding_id = Column(String, ForeignKey("findings.id"), nullable=False)
+    action_type = Column(String, nullable=False)
+    status = Column(Enum(ActionStatus, values_callable=lambda obj: [e.value for e in obj]), nullable=False, default=ActionStatus.PROPOSED)
+    title = Column(String, nullable=False)
+    description = Column(Text, nullable=True)
+    params = Column(JSON, nullable=False, default=dict)
+    result = Column(JSON, nullable=True)
+    error_message = Column(Text, nullable=True)
+    proposed_at = Column(DateTime(timezone=True), server_default=func.now())
+    approved_at = Column(DateTime(timezone=True), nullable=True)
+    approved_by = Column(String, nullable=True)
+    executed_at = Column(DateTime(timezone=True), nullable=True)
+    completed_at = Column(DateTime(timezone=True), nullable=True)
+

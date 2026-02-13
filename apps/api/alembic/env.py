@@ -13,6 +13,7 @@ from app.models.finding import Finding  # noqa: F401
 from app.models.service import Service  # noqa: F401
 from app.models.jira import JiraIssue, JiraChangelogEvent  # noqa: F401
 from app.models.k8s import K8sPodSnapshot, K8sEvent  # noqa: F401
+from app.models.remediation_action import RemediationAction  # noqa: F401
 
 config = context.config
 fileConfig(config.config_file_name)

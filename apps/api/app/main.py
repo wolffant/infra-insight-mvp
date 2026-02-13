@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.core.logging import setup_logging
-from app.routers import health, findings, services, reports, sources
+from app.routers import health, findings, services, reports, sources, actions
 
 setup_logging()
 
@@ -11,3 +11,4 @@ app.include_router(findings.router, prefix="/findings", tags=["findings"])
 app.include_router(services.router, prefix="/services", tags=["services"])
 app.include_router(reports.router, prefix="/reports", tags=["reports"])
 app.include_router(sources.router, prefix="/sources", tags=["sources"])
+app.include_router(actions.router, prefix="/actions", tags=["remediation"])
